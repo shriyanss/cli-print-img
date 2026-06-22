@@ -1,0 +1,22 @@
+name: PR Branch Checker
+
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    check-branch:
+        runs-on: ubuntu-latest
+        permissions:
+            pull-requests: write
+        steps:
+            - uses: actions/checkout@v4
+            - name: Redirect PR to dev
+              if: github.head_ref != 'dev' || github.event.pull_request.head.repo.full_name != 'shriyanss/cli-print-img'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  PR_NUMBER: ${{ github.event.pull_request.number }}
+              run: |
+                  gh pr edit $PR_NUMBER --base dev
+                  gh pr comment $PR_NUMBER --body "This PR was targeting \`main\`, but only the \`dev\` branch of \`shriyanss/cli-print-img\` can merge directly into \`main\`. The target branch has been changed to \`dev\`."
