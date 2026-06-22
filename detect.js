@@ -5,17 +5,17 @@
 export function detectRenderer() {
     const { env } = process;
 
-    if (env.TMUX) return 'halfblock';
+    if (env.TMUX) return "halfblock";
 
     // Kitty Graphics Protocol
-    if (env.KITTY_WINDOW_ID || env.TERM === 'xterm-kitty' || env.TERM_PROGRAM === 'kitty') return 'kitty';
+    if (env.KITTY_WINDOW_ID || env.TERM === "xterm-kitty" || env.TERM_PROGRAM === "kitty") return "kitty";
     // Ghostty has strong Kitty support
-    if (env.TERM_PROGRAM === 'ghostty') return 'kitty';
+    if (env.TERM_PROGRAM === "ghostty") return "kitty";
 
     // iTerm2 Inline Images Protocol
-    if (env.TERM_PROGRAM === 'iTerm.app' || env.LC_TERMINAL === 'iTerm2' || env.ITERM_SESSION_ID) return 'iterm2';
+    if (env.TERM_PROGRAM === "iTerm.app" || env.LC_TERMINAL === "iTerm2" || env.ITERM_SESSION_ID) return "iterm2";
     // WezTerm supports both; iTerm2 protocol is more stable there
-    if (env.TERM_PROGRAM === 'WezTerm') return 'iterm2';
+    if (env.TERM_PROGRAM === "WezTerm") return "iterm2";
 
-    return 'halfblock';
+    return "halfblock";
 }

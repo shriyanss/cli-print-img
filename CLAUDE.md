@@ -28,6 +28,7 @@ renderers/
 ## Renderer API
 
 All renderers take `(source, target_cols, ...)`:
+
 - `renderKitty(image_path, target_cols, target_char_rows)` — sync
 - `renderIterm2(image_path, target_cols, target_char_rows)` — sync
 - `renderHalfblock(jimp_image, target_cols, target_pixel_rows)` — sync; takes pre-read Jimp object to avoid a second disk read
@@ -60,30 +61,33 @@ Same structure as `js-recon`. CI pipeline (`publish.yml`) triggers on GitHub rel
 2. **Update CHANGELOG** — prepend a new `## <version> - <YYYY-MM-DD>` section with `### Added`, `### Changed`, `### Fixed` sub-sections as needed.
 
 3. **Commit and push** to `dev`:
-   ```bash
-   git add package.json CHANGELOG.md <other changed files>
-   git commit -m "feat: <summary>"
-   git push origin dev
-   ```
+
+    ```bash
+    git add package.json CHANGELOG.md <other changed files>
+    git commit -m "feat: <summary>"
+    git push origin dev
+    ```
 
 4. **Open PR** `dev → main`:
-   ```bash
-   gh pr create --repo shriyanss/cli-print-img \
-     --head dev --base main \
-     --title "v<version>" \
-     --body "<CHANGELOG section for this version>"
-   ```
+
+    ```bash
+    gh pr create --repo shriyanss/cli-print-img \
+      --head dev --base main \
+      --title "v<version>" \
+      --body "<CHANGELOG section for this version>"
+    ```
 
 5. **Monitor CI** — `gh pr checks <pr-number> --repo shriyanss/cli-print-img`. Do NOT merge without user approval.
 
 6. **Create GitHub release** — after PR is merged:
-   ```bash
-   gh release create v<version> \
-     --repo shriyanss/cli-print-img \
-     --title "v<version>" \
-     --notes "<CHANGELOG section>" \
-     --latest   # omit for alpha/beta; add only for stable releases
-   ```
+
+    ```bash
+    gh release create v<version> \
+      --repo shriyanss/cli-print-img \
+      --title "v<version>" \
+      --notes "<CHANGELOG section>" \
+      --latest   # omit for alpha/beta; add only for stable releases
+    ```
 
 7. **Wait for npm publish** — `gh run list --repo shriyanss/cli-print-img`. Confirm package is live before updating consumers.
 
