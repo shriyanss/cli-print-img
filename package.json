@@ -1,16 +1,16 @@
 {
-  "name": "@shriyanss/cli-print-img",
-  "version": "1.0.0",
-  "description": "Library to print images in the terminal using ANSI true-color half-block characters",
-  "license": "MIT",
-  "author": "Shriyans Sudhi",
-  "type": "module",
-  "main": "index.js",
-  "exports": "./index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "jimp": "^1.6.1"
-  }
+    "name": "@shriyanss/cli-print-img",
+    "version": "1.0.1",
+    "description": "Library to print images in the terminal using ANSI true-color half-block characters",
+    "license": "MIT",
+    "author": "Shriyans Sudhi",
+    "type": "module",
+    "main": "index.js",
+    "exports": "./index.js",
+    "scripts": {
+        "test": "node --input-type=module --eval \"import { printImage } from './index.js'; console.log('[✓] Import OK');\""
+    },
+    "dependencies": {
+        "jimp": "^1.6.1"
+    }
 }

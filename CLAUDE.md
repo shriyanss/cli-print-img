@@ -17,6 +17,7 @@ ESM library (`@shriyanss/cli-print-img`) that renders images in the terminal usi
 ## Half-block rendering technique
 
 Each terminal character row covers two pixel rows:
+
 - Top pixel → foreground color of `▀`
 - Bottom pixel → background color of `▀`
 
