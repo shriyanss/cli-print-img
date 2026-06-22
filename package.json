@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Library to print images in the terminal using ANSI true-color half-block characters",
   "license": "MIT",
-  "author": "shriyanss",
+  "author": "Shriyans Sudhi",
   "type": "module",
   "main": "index.js",
   "exports": "./index.js",

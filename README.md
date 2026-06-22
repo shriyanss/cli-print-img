@@ -1,6 +1,6 @@
 # @shriyanss/cli-print-img
 
-![cli-print-img logo](assets/cli-img-print-logo.png)
+![cli-print-img logo](assets/cli-print-img-logo.png)
 
 A Node.js library that renders images directly in the terminal using ANSI true-color and Unicode half-block characters (`▀`). Each terminal row displays two image rows (top pixel as foreground, bottom pixel as background), doubling effective vertical resolution.
 
