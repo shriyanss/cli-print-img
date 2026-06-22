@@ -1,16 +1,14 @@
 {
   "name": "@shriyanss/cli-print-img",
   "version": "1.0.0",
-  "description": "CLI utility to print images in the terminal using ANSI half-block characters",
-  "license": "ISC",
+  "description": "Library to print images in the terminal using ANSI true-color half-block characters",
+  "license": "MIT",
   "author": "shriyanss",
   "type": "module",
   "main": "index.js",
-  "bin": {
-    "cli-print-img": "index.js"
-  },
+  "exports": "./index.js",
   "scripts": {
-    "start": "node index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "jimp": "^1.6.1"

@@ -1,93 +1,83 @@
-#!/usr/bin/env node
 import { Jimp, intToRGBA } from 'jimp';
 
-function rgbToAnsiFg(r, g, b) {
+function rgb_to_ansi_fg(r, g, b) {
   return `\x1b[38;2;${r};${g};${b}m`;
 }
 
-function rgbToAnsiBg(r, g, b) {
+function rgb_to_ansi_bg(r, g, b) {
   return `\x1b[48;2;${r};${g};${b}m`;
 }
 
 // Render image using half-block characters (▀).
 // Each terminal row displays 2 image rows: top pixel = fg, bottom pixel = bg.
 // This doubles effective vertical resolution, making logos recognizable at small sizes.
-async function printImage(imagePath, vertical_percent = 20, maintain_aspect_ratio = true) {
-  const image = await Jimp.read(imagePath);
+export async function printImage(image_path, vertical_percent = 20, maintain_aspect_ratio = true) {
+  const image = await Jimp.read(image_path);
 
-  const termWidth = process.stdout.columns || 120;
-  const termHeight = process.stdout.rows || 50;
+  const term_width = process.stdout.columns || 120;
+  const term_height = process.stdout.rows || 50;
 
-  // Each terminal row covers 2 pixel rows (half-block technique),
-  // so effective pixel rows = char_rows * 2.
-  // Terminal chars are ~2x taller than wide (CHAR_ASPECT = 2.0),
-  // but with half-blocks we use 2 pixels per row, so the effective ratio is 1:1.
+  // Terminal chars are ~2x taller than wide, but with half-blocks we use
+  // 2 pixels per row, so the effective ratio is 1:1.
   const CHAR_ASPECT = 1.0;
 
-  const imgAspectRatio = image.bitmap.width / image.bitmap.height;
+  const img_aspect_ratio = image.bitmap.width / image.bitmap.height;
 
-  let targetCols, targetPixelRows;
+  let target_cols, target_pixel_rows;
 
   if (maintain_aspect_ratio) {
-    // maxCharRows = 20% of terminal height
-    const maxCharRows = Math.max(1, Math.floor(termHeight * (vertical_percent / 100)));
-    // Each char row = 2 pixel rows
-    const maxPixelRows = maxCharRows * 2;
-    // Given maxPixelRows, how many cols to preserve aspect ratio?
-    const colsForMax = Math.round(maxPixelRows * imgAspectRatio * CHAR_ASPECT);
+    const max_char_rows = Math.max(1, Math.floor(term_height * (vertical_percent / 100)));
+    const max_pixel_rows = max_char_rows * 2;
+    const cols_for_max = Math.round(max_pixel_rows * img_aspect_ratio * CHAR_ASPECT);
 
-    if (colsForMax <= termWidth - 2) {
-      targetCols = colsForMax;
-      targetPixelRows = maxPixelRows;
+    if (cols_for_max <= term_width - 2) {
+      target_cols = cols_for_max;
+      target_pixel_rows = max_pixel_rows;
     } else {
-      // Too wide — constrain by terminal width
-      targetCols = termWidth - 2;
-      const pixelRowsForWidth = Math.round(targetCols / (imgAspectRatio * CHAR_ASPECT));
-      const cappedPixelRows = Math.min(pixelRowsForWidth, maxPixelRows);
-      // Recompute cols to match capped rows
-      targetCols = Math.round(cappedPixelRows * imgAspectRatio * CHAR_ASPECT);
-      targetPixelRows = cappedPixelRows;
+      target_cols = term_width - 2;
+      const pixel_rows_for_width = Math.round(target_cols / (img_aspect_ratio * CHAR_ASPECT));
+      const capped_pixel_rows = Math.min(pixel_rows_for_width, max_pixel_rows);
+      target_cols = Math.round(capped_pixel_rows * img_aspect_ratio * CHAR_ASPECT);
+      target_pixel_rows = capped_pixel_rows;
     }
   } else {
-    targetCols = termWidth - 2;
-    targetPixelRows = (termHeight - 5) * 2;
+    target_cols = term_width - 2;
+    target_pixel_rows = (term_height - 5) * 2;
   }
 
   // Ensure even number of pixel rows (pairs for half-block)
-  if (targetPixelRows % 2 !== 0) targetPixelRows++;
+  if (target_pixel_rows % 2 !== 0) target_pixel_rows++;
 
-  image.resize({ w: targetCols, h: targetPixelRows });
+  image.resize({ w: target_cols, h: target_pixel_rows });
 
-  const charRows = targetPixelRows / 2;
+  const char_rows = target_pixel_rows / 2;
 
-  for (let row = 0; row < charRows; row++) {
-    const topY = row * 2;
-    const botY = row * 2 + 1;
+  for (let row = 0; row < char_rows; row++) {
+    const top_y = row * 2;
+    const bot_y = row * 2 + 1;
     let line = '';
 
     for (let x = 0; x < image.bitmap.width; x++) {
-      const top = intToRGBA(image.getPixelColor(x, topY));
-      const bot = intToRGBA(image.getPixelColor(x, botY));
+      const top = intToRGBA(image.getPixelColor(x, top_y));
+      const bot = intToRGBA(image.getPixelColor(x, bot_y));
 
-      const topTransparent = top.a < 128;
-      const botTransparent = bot.a < 128;
+      const top_transparent = top.a < 128;
+      const bot_transparent = bot.a < 128;
 
-      if (topTransparent && botTransparent) {
+      if (top_transparent && bot_transparent) {
         line += ' ';
         continue;
       }
 
-      if (topTransparent) {
-        line += `${rgbToAnsiBg(bot.r, bot.g, bot.b)} \x1b[0m`;
-      } else if (botTransparent) {
-        line += `${rgbToAnsiFg(top.r, top.g, top.b)}▀\x1b[0m`;
+      if (top_transparent) {
+        line += `${rgb_to_ansi_bg(bot.r, bot.g, bot.b)} \x1b[0m`;
+      } else if (bot_transparent) {
+        line += `${rgb_to_ansi_fg(top.r, top.g, top.b)}▀\x1b[0m`;
       } else {
-        line += `${rgbToAnsiFg(top.r, top.g, top.b)}${rgbToAnsiBg(bot.r, bot.g, bot.b)}▀\x1b[0m`;
+        line += `${rgb_to_ansi_fg(top.r, top.g, top.b)}${rgb_to_ansi_bg(bot.r, bot.g, bot.b)}▀\x1b[0m`;
       }
     }
 
     console.log(line);
   }
 }
-
-await printImage('https://js-recon.io/img/js-recon-logo.png', 50);
