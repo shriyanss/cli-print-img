@@ -55,6 +55,9 @@ jobs:
     publish-npm:
         needs: test
         runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -62,14 +65,15 @@ jobs:
                   node-version: "22"
                   registry-url: https://registry.npmjs.org/
             - run: npm ci
-            - name: Publish to npm
+            - name: Ensure npm CLI supports OIDC trusted publishing
+              run: npm install -g npm@latest
+            - name: Stage release to npm via OIDC
               run: |
                   TAG="latest"
                   [[ "$VERSION" == *"beta"* ]] && TAG="beta"
                   [[ "$VERSION" == *"alpha"* ]] && TAG="alpha"
-                  npm publish --access public --tag $TAG
+                  npm stage publish --tag $TAG
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
                   VERSION: ${{ github.event.release.tag_name }}
 
     merge_main_and_dev:

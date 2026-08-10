@@ -52,7 +52,7 @@ export async function printImage(
     const method = renderer ?? detectRenderer();
 
     if (method === "kitty") {
-        renderKitty(image_path, target_cols, target_char_rows);
+        renderKitty(image_path, target_cols);
     } else if (method === "iterm2") {
         renderIterm2(image_path, target_cols, target_char_rows);
     } else {
