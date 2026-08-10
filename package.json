@@ -1,7 +1,11 @@
 {
     "name": "@shriyanss/cli-print-img",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Library to print images in the terminal using ANSI true-color half-block characters",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/shriyanss/cli-print-img"
+    },
     "license": "MIT",
     "author": "Shriyans Sudhi",
     "type": "module",

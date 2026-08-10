@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.1.1 - 2026-08-10
+
+### Fixed
+
+- Kitty Graphics Protocol renderer sent both `c` (columns) and `r` (rows) in the same escape sequence, which stretches the image to exactly fill that cell box instead of preserving its aspect ratio — producing a visibly distorted logo in Kitty/Ghostty. Only `c` is now sent, letting the terminal auto-compute rows from the image's real aspect ratio (matching how the iTerm2 renderer already uses `preserveAspectRatio=1`).
+- The Kitty renderer also suppressed cursor movement (`C=1`) and unconditionally advanced a single line afterward, which assumed a fixed, known row count. Now uses the protocol default (`C=0`) so the terminal itself advances the cursor by however many rows the image actually rendered, fixing overlap with subsequent output.
+
 ## 1.1.0 - 2026-06-22
 
 ### Added
